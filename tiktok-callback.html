@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>TikTok-Login · ClipFlow</title><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<h1>TikTok-Login</h1>
+<p id="lead">Fast fertig. Kopier die Adresse unten und füg sie in ClipFlow im Fenster „Mit TikTok verbinden“ ein.</p>
+<div class="card">
+  <textarea id="url" readonly></textarea>
+  <button id="copy" type="button">Kopieren</button>
+  <p id="hint" style="font-size:13px">Diese Seite sendet nichts weiter. Der Code ist nur zusammen mit dem geheimen Schlüssel auf deinem Server nutzbar und läuft nach wenigen Minuten ab.</p>
+</div>
+<script>
+  // Nur anzeigen, nichts übertragen (kein fetch, keine Weiterleitung)
+  var q = new URLSearchParams(location.search), box = document.getElementById("url");
+  box.value = location.href;
+  if (q.get("error")) {
+    document.getElementById("lead").innerHTML = '<span class="err">TikTok hat den Login abgelehnt: ' +
+      (q.get("error_description") || q.get("error")).replace(/[<>&]/g, "") + "</span> Du kannst die Adresse trotzdem einfügen, ClipFlow zeigt dann den genauen Grund.";
+  } else if (!q.get("code")) {
+    document.getElementById("lead").textContent = "Diese Seite wird nach dem TikTok-Login automatisch aufgerufen. Direkt geöffnet hat sie keine Funktion.";
+  }
+  document.getElementById("copy").onclick = function () {
+    box.select();
+    (navigator.clipboard ? navigator.clipboard.writeText(box.value) : Promise.reject()).catch(function () { document.execCommand("copy"); });
+    this.textContent = "Kopiert ✓";
+  };
+</script>
+</main></body></html>
